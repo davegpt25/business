@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>클로젯핏 — 이미 가진 옷으로, 더 잘 입는다</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue: #2E75B6;
+      --blue-light: #EBF3FB;
+      --blue-dark: #1A4F80;
+      --accent: #FF6B6B;
+      --gray: #6B7280;
+      --bg: #FAFAFA;
+      --white: #FFFFFF;
+      --text: #1A1A2E;
+      --border: #E5E7EB;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans KR', sans-serif; color: var(--text); background: var(--bg); }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 64px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--blue); display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .logo-text { font-weight: 700; font-size: 18px; color: var(--blue); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--gray); font-size: 14px; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: var(--blue); }
+    .nav-cta {
+      background: var(--blue); color: #fff; border: none; border-radius: 8px;
+      padding: 9px 20px; font-size: 14px; font-weight: 600; cursor: pointer;
+      font-family: inherit; transition: background .2s;
+    }
+    .nav-cta:hover { background: var(--blue-dark); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center;
+      padding: 100px 40px 60px;
+      background: linear-gradient(135deg, #EBF3FB 0%, #FAFAFA 60%);
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; right: -100px; top: -100px;
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(46,117,182,0.08) 0%, transparent 70%);
+    }
+    .hero-content { max-width: 560px; z-index: 1; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #fff; border: 1px solid var(--blue); border-radius: 20px;
+      padding: 5px 14px; font-size: 13px; color: var(--blue); font-weight: 500;
+      margin-bottom: 28px;
+    }
+    .hero-badge span { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); display: inline-block; }
+    h1 { font-size: 52px; font-weight: 900; line-height: 1.15; margin-bottom: 20px; }
+    h1 em { color: var(--blue); font-style: normal; }
+    .hero-desc { font-size: 17px; color: var(--gray); line-height: 1.7; margin-bottom: 36px; }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--blue); color: #fff; border: none; border-radius: 12px;
+      padding: 15px 32px; font-size: 16px; font-weight: 700; cursor: pointer;
+      font-family: inherit; transition: all .2s; box-shadow: 0 4px 20px rgba(46,117,182,0.3);
+    }
+    .btn-primary:hover { background: var(--blue-dark); transform: translateY(-1px); }
+    .btn-secondary {
+      background: transparent; color: var(--blue); border: 2px solid var(--blue);
+      border-radius: 12px; padding: 13px 28px; font-size: 16px; font-weight: 600;
+      cursor: pointer; font-family: inherit; transition: all .2s;
+    }
+    .btn-secondary:hover { background: var(--blue-light); }
+    .hero-stats { display: flex; gap: 40px; margin-top: 48px; }
+    .stat-num { font-size: 28px; font-weight: 900; color: var(--blue); }
+    .stat-label { font-size: 13px; color: var(--gray); margin-top: 2px; }
+
+    /* ── PHONE MOCKUP ── */
+    .hero-visual {
+      flex: 1; display: flex; justify-content: center; align-items: center;
+      position: relative; min-height: 480px;
+    }
+    .phone {
+      width: 260px; height: 520px; border-radius: 36px;
+      background: #fff; box-shadow: 0 32px 80px rgba(0,0,0,0.18);
+      border: 6px solid #1A1A2E; position: relative; overflow: hidden;
+    }
+    .phone-notch {
+      position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+      width: 80px; height: 22px; background: #1A1A2E; border-radius: 12px; z-index: 10;
+    }
+    .phone-screen {
+      width: 100%; height: 100%; background: var(--blue-light);
+      display: flex; flex-direction: column; padding-top: 42px;
+    }
+    .phone-header {
+      background: var(--blue); color: #fff; padding: 10px 16px;
+      font-size: 12px; font-weight: 700;
+    }
+    .phone-body { padding: 14px; flex: 1; }
+    .phone-title { font-size: 11px; font-weight: 700; color: var(--blue); margin-bottom: 10px; }
+    .color-row { display: flex; gap: 6px; margin-bottom: 10px; }
+    .color-chip { width: 32px; height: 32px; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+    .outfit-card {
+      background: #fff; border-radius: 12px; padding: 10px; margin-bottom: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .outfit-label { font-size: 9px; color: var(--gray); margin-bottom: 6px; }
+    .outfit-items { display: flex; gap: 6px; }
+    .outfit-item {
+      width: 44px; height: 54px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .match-badge {
+      font-size: 8px; background: var(--blue); color: #fff;
+      padding: 2px 6px; border-radius: 10px; margin-top: 6px; display: inline-block;
+    }
+    .floating-card {
+      position: absolute; background: #fff; border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12); padding: 10px 14px;
+    }
+    .fc-left { left: -40px; top: 120px; width: 130px; }
+    .fc-right { right: -40px; bottom: 140px; width: 120px; }
+    .fc-label { font-size: 9px; color: var(--gray); margin-bottom: 4px; }
+    .fc-value { font-size: 13px; font-weight: 700; color: var(--blue); }
+
+    /* ── SECTION COMMON ── */
+    section { padding: 96px 40px; }
+    .section-label { font-size: 13px; font-weight: 700; color: var(--blue); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+    .section-title { font-size: 38px; font-weight: 900; line-height: 1.2; margin-bottom: 16px; }
+    .section-desc { font-size: 16px; color: var(--gray); line-height: 1.7; max-width: 520px; }
+    .center { text-align: center; }
+    .center .section-desc { margin: 0 auto; }
+
+    /* ── PAIN POINTS ── */
+    .pain { background: #fff; }
+    .pain-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 48px; max-width: 860px; margin-left: auto; margin-right: auto; }
+    .pain-card {
+      border: 1px solid var(--border); border-radius: 16px; padding: 28px;
+      background: var(--bg); transition: all .2s; cursor: default;
+    }
+    .pain-card:hover { border-color: var(--blue); box-shadow: 0 4px 20px rgba(46,117,182,0.1); transform: translateY(-2px); }
+    .pain-icon { font-size: 32px; margin-bottom: 14px; }
+    .pain-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .pain-text { font-size: 14px; color: var(--gray); line-height: 1.6; }
+
+    /* ── HOW IT WORKS ── */
+    .how { background: linear-gradient(135deg, var(--blue-light) 0%, #fff 100%); }
+    .steps { display: flex; gap: 0; margin-top: 60px; position: relative; }
+    .steps::before {
+      content: ''; position: absolute; top: 36px; left: 60px; right: 60px; height: 2px;
+      background: linear-gradient(90deg, var(--blue) 0%, var(--blue) 100%);
+      z-index: 0;
+    }
+    .step { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 16px; position: relative; z-index: 1; }
+    .step-num {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: var(--blue); color: #fff; font-size: 22px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
+      box-shadow: 0 4px 16px rgba(46,117,182,0.3); border: 4px solid #fff;
+    }
+    .step-icon { font-size: 24px; position: absolute; top: 22px; }
+    .step-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .step-text { font-size: 13px; color: var(--gray); line-height: 1.6; }
+
+    /* ── FEATURES ── */
+    .features { background: #fff; }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 56px; }
+    .feat-card {
+      border-radius: 20px; padding: 32px; background: var(--bg);
+      border: 1px solid var(--border); transition: all .25s;
+    }
+    .feat-card:hover { background: var(--blue-light); border-color: var(--blue); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(46,117,182,0.12); }
+    .feat-icon {
+      width: 52px; height: 52px; border-radius: 14px; background: var(--blue);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-bottom: 20px;
+    }
+    .feat-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+    .feat-text { font-size: 14px; color: var(--gray); line-height: 1.65; }
+
+    /* ── COLOR MATCHING DEMO ── */
+    .demo { background: var(--text); color: #fff; }
+    .demo .section-label { color: #7DD3FC; }
+    .demo .section-title { color: #fff; }
+    .demo .section-desc { color: #94A3B8; }
+    .demo-container { display: flex; gap: 48px; align-items: center; margin-top: 56px; }
+    .demo-left { flex: 1; }
+    .demo-card {
+      background: #1E293B; border-radius: 20px; padding: 28px;
+      border: 1px solid #334155;
+    }
+    .demo-subtitle { font-size: 13px; color: #64748B; margin-bottom: 16px; font-weight: 500; }
+    .selected-item {
+      background: var(--blue); border-radius: 14px; padding: 20px;
+      display: flex; align-items: center; gap: 16px; margin-bottom: 24px;
+    }
+    .selected-thumb {
+      width: 60px; height: 70px; background: rgba(255,255,255,0.2);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 28px;
+    }
+    .selected-info { color: #fff; }
+    .selected-name { font-weight: 700; font-size: 15px; }
+    .selected-color { font-size: 12px; opacity: 0.8; margin-top: 4px; }
+    .palette-title { font-size: 12px; color: #64748B; margin-bottom: 12px; }
+    .palette-row { display: flex; gap: 10px; margin-bottom: 20px; }
+    .p-chip { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .p-color { width: 40px; height: 40px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .p-label { font-size: 9px; color: #64748B; }
+    .p-chip.recommended .p-color { ring: 2px solid #7DD3FC; outline: 2px solid #7DD3FC; }
+    .demo-right { flex: 1; }
+    .outfit-suggestions { display: flex; flex-direction: column; gap: 14px; }
+    .sug-card {
+      background: #1E293B; border-radius: 16px; padding: 18px;
+      border: 1px solid #334155; display: flex; align-items: center; gap: 16px;
+      transition: border-color .2s; cursor: pointer;
+    }
+    .sug-card:hover { border-color: var(--blue); }
+    .sug-card.best { border-color: #F59E0B; background: #1A1400; }
+    .sug-items { display: flex; gap: 8px; }
+    .sug-item { width: 48px; height: 58px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+    .sug-info { flex: 1; }
+    .sug-mood { font-size: 11px; color: #64748B; margin-bottom: 4px; }
+    .sug-name { font-size: 14px; font-weight: 600; color: #fff; }
+    .sug-badge { font-size: 10px; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-top: 4px; }
+    .badge-best { background: #F59E0B; color: #000; font-weight: 700; }
+    .badge-good { background: #1D4ED8; color: #fff; }
+
+    /* ── ROADMAP ── */
+    .roadmap { background: var(--bg); }
+    .roadmap-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 56px; }
+    .phase-card {
+      border-radius: 16px; padding: 28px; border: 2px solid var(--border);
+      background: #fff; position: relative; overflow: hidden;
+    }
+    .phase-card.active { border-color: var(--blue); background: var(--blue-light); }
+    .phase-num {
+      font-size: 11px; font-weight: 700; color: var(--blue); letter-spacing: 1px;
+      text-transform: uppercase; margin-bottom: 8px;
+    }
+    .phase-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .phase-period { font-size: 12px; color: var(--gray); margin-bottom: 16px; }
+    .phase-items { list-style: none; }
+    .phase-items li { font-size: 13px; color: var(--gray); padding: 4px 0; padding-left: 16px; position: relative; }
+    .phase-items li::before { content: '·'; position: absolute; left: 4px; color: var(--blue); font-weight: 700; }
+    .phase-tag {
+      position: absolute; top: 16px; right: 16px;
+      background: var(--blue); color: #fff; font-size: 10px; font-weight: 700;
+      padding: 3px 8px; border-radius: 6px;
+    }
+
+    /* ── CTA ── */
+    .cta {
+      background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 100%);
+      color: #fff; text-align: center; padding: 100px 40px;
+    }
+    .cta .section-title { color: #fff; font-size: 44px; }
+    .cta .section-desc { color: rgba(255,255,255,0.75); margin: 0 auto 40px; max-width: 460px; }
+    .store-btns { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+    .store-btn {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);
+      color: #fff; border-radius: 12px; padding: 14px 28px;
+      font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+      transition: all .2s; backdrop-filter: blur(8px);
+    }
+    .store-btn:hover { background: rgba(255,255,255,0.22); }
+    .store-icon { font-size: 22px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--text); color: #64748B;
+      padding: 48px 40px; display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 20px;
+    }
+    .footer-logo { font-size: 20px; font-weight: 900; color: #fff; }
+    .footer-logo span { color: var(--blue); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { color: #64748B; text-decoration: none; font-size: 13px; transition: color .2s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-copy { font-size: 12px; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(4px);
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff; border-radius: 24px; padding: 40px; max-width: 440px; width: 90%;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.25); position: relative;
+    }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      background: var(--bg); border: none; border-radius: 8px; width: 32px; height: 32px;
+      cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;
+    }
+    .modal h2 { font-size: 22px; font-weight: 900; margin-bottom: 8px; }
+    .modal p { color: var(--gray); font-size: 14px; margin-bottom: 24px; }
+    .modal-input {
+      width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 12px 16px; font-size: 15px; font-family: inherit; margin-bottom: 12px;
+      outline: none; transition: border-color .2s;
+    }
+    .modal-input:focus { border-color: var(--blue); }
+    .modal-submit {
+      width: 100%; background: var(--blue); color: #fff; border: none;
+      border-radius: 10px; padding: 14px; font-size: 16px; font-weight: 700;
+      font-family: inherit; cursor: pointer; transition: background .2s;
+    }
+    .modal-submit:hover { background: var(--blue-dark); }
+
+    @media (max-width: 900px) {
+      h1 { font-size: 36px; }
+      .hero { flex-direction: column; text-align: center; }
+      .hero-visual { display: none; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .roadmap-grid { grid-template-columns: 1fr 1fr; }
+      .steps::before { display: none; }
+      .steps { flex-direction: column; gap: 24px; }
+      .demo-container { flex-direction: column; }
+      .pain-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icon">👔</div>
+    <span class="logo-text">ClosetFit</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">기능</a></li>
+    <li><a href="#how">이용방법</a></li>
+    <li><a href="#demo">컬러매칭</a></li>
+    <li><a href="#roadmap">로드맵</a></li>
+  </ul>
+  <button class="nav-cta" onclick="openModal()">사전 신청하기</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="gap:60px">
+  <div class="hero-content">
+    <div class="hero-badge"><span></span> AI 퍼스널 코디 서비스</div>
+    <h1>이미 가진 옷으로,<br/><em>더 잘 입는다</em></h1>
+    <p class="hero-desc">
+      옷장 속 옷을 고르면 AI가 어울리는 컬러와 코디를 추천해드립니다.<br/>
+      더 이상 "입을 게 없다"는 말은 이제 그만!
+    </p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="openModal()">🚀 무료로 시작하기</button>
+      <button class="btn-secondary" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">이용방법 보기</button>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-num">95%</div><div class="stat-label">코디 만족도</div></div>
+      <div><div class="stat-num">2분</div><div class="stat-label">평균 코디 완성 시간</div></div>
+      <div><div class="stat-num">30%↑</div><div class="stat-label">옷장 활용률 향상</div></div>
+    </div>
+  </div>
+
+  <!-- Phone Mockup -->
+  <div class="hero-visual">
+    <div class="floating-card fc-left">
+      <div class="fc-label">🎨 컬러 매칭</div>
+      <div style="display:flex;gap:4px;margin-top:4px">
+        <div style="width:18px;height:18px;border-radius:50%;background:#2E75B6"></div>
+        <div style="width:18px;height:18px;border-radius:50%;background:#F4A460"></div>
+        <div style="width:18px;height:18px;border-radius:50%;background:#4B5563"></div>
+      </div>
+      <div class="fc-value" style="margin-top:6px">완벽 조합 ✨</div>
+    </div>
+    <div class="phone">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-header">📱 ClosetFit — 오늘의 코디</div>
+        <div class="phone-body">
+          <div class="phone-title">🔍 선택한 아이템</div>
+          <div class="outfit-card">
+            <div class="outfit-label">네이비 슬랙스</div>
+            <div style="display:flex;gap:6px;margin-bottom:6px">
+              <div style="width:24px;height:24px;border-radius:50%;background:#1E3A5F;border:2px solid #eee"></div>
+              <span style="font-size:10px;color:#6B7280;align-self:center">네이비 블루</span>
+            </div>
+          </div>
+          <div class="phone-title">✨ 추천 코디</div>
+          <div class="outfit-card">
+            <div class="outfit-label">캐주얼 룩</div>
+            <div class="outfit-items">
+              <div class="outfit-item" style="background:#EBF3FB">👕</div>
+              <div class="outfit-item" style="background:#E5E7EB">👖</div>
+              <div class="outfit-item" style="background:#FEF3C7">👟</div>
+            </div>
+            <div class="match-badge">98% 매칭</div>
+          </div>
+          <div class="outfit-card">
+            <div class="outfit-label">오피스 룩</div>
+            <div class="outfit-items">
+              <div class="outfit-item" style="background:#F3F4F6">👔</div>
+              <div class="outfit-item" style="background:#E5E7EB">👖</div>
+              <div class="outfit-item" style="background:#F3F4F6">👞</div>
+            </div>
+            <div class="match-badge">94% 매칭</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="floating-card fc-right">
+      <div class="fc-label">👗 옷장 활용률</div>
+      <div class="fc-value">+32% 향상</div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN POINTS -->
+<section class="pain">
+  <div class="center">
+    <div class="section-label">Problem</div>
+    <h2 class="section-title">이런 고민, 익숙하지 않으신가요?</h2>
+    <p class="section-desc">패션에 관심은 있지만 매일 아침 코디가 막막한 분들을 위해 만들었습니다.</p>
+  </div>
+  <div class="pain-grid">
+    <div class="pain-card">
+      <div class="pain-icon">👚</div>
+      <div class="pain-title">"옷은 많은데 입을 게 없어"</div>
+      <div class="pain-text">옷장에 옷이 가득하지만 어떻게 조합해야 할지 몰라 결국 같은 옷만 반복해서 입게 됩니다.</div>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">🎨</div>
+      <div class="pain-title">컬러 매칭이 너무 어려워</div>
+      <div class="pain-text">어떤 색끼리 잘 어울리는지 직관적으로 알기 어렵고, 매번 시행착오를 반복하게 됩니다.</div>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">🛍️</div>
+      <div class="pain-title">자꾸 새 옷만 사게 돼</div>
+      <div class="pain-text">기존 옷을 잘 활용하지 못하고 충동적으로 새 옷을 사게 되는 소비 패턴이 반복됩니다.</div>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">📱</div>
+      <div class="pain-title">레퍼런스 찾기가 너무 힘들어</div>
+      <div class="pain-text">핀터레스트, 인스타그램을 뒤지느라 시간을 낭비하지만 정작 내 옷과 맞는 스타일을 찾기 어렵습니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="center">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">딱 3단계로 완성되는 오늘의 코디</h2>
+    <p class="section-desc">복잡한 과정 없이 간단하게 나만의 스타일을 완성해보세요.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-title">옷 선택</div>
+      <div class="step-text">오늘 입고 싶은<br/>상의 또는 하의를<br/>골라요</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-title">AI 컬러 분석</div>
+      <div class="step-text">AI가 컬러를 추출하고<br/>어울리는 팔레트를<br/>찾아줘요</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-title">코디 추천</div>
+      <div class="step-text">내 옷장에서<br/>최고의 매칭 조합을<br/>제안해줘요</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-title">레퍼런스 탐색</div>
+      <div class="step-text">비슷한 스타일의<br/>실제 코디 사진으로<br/>영감을 얻어요</div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-title">저장 & 공유</div>
+      <div class="step-text">마음에 드는 코디를<br/>저장하고<br/>SNS에 공유해요</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="center">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">클로젯핏이 특별한 이유</h2>
+    <p class="section-desc">단순한 옷장 앱을 넘어, 당신의 패션 파트너가 됩니다.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feat-card">
+      <div class="feat-icon">🤖</div>
+      <div class="feat-title">AI 자동 태깅</div>
+      <div class="feat-text">사진만 찍으면 AI가 컬러, 소재, 핏, 스타일을 자동으로 인식해 태그를 달아줍니다.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🎨</div>
+      <div class="feat-title">컬러 과학 기반 추천</div>
+      <div class="feat-text">유사색·보색·중립색 등 컬러 이론을 적용해 과학적으로 어울리는 조합을 찾아드립니다.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">👗</div>
+      <div class="feat-title">내 옷장 기반 코디</div>
+      <div class="feat-text">새 옷 구매 없이 지금 가진 옷들로만 최적의 조합을 완성합니다.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🌤️</div>
+      <div class="feat-title">날씨·계절 연동</div>
+      <div class="feat-text">오늘의 날씨와 계절에 맞는 코디를 우선적으로 추천해 실용성을 높입니다.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📊</div>
+      <div class="feat-title">스타일 리포트</div>
+      <div class="feat-text">내가 자주 쓰는 컬러 패턴과 잘 안 입는 옷을 분석해 옷장 활용률을 높입니다.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🌈</div>
+      <div class="feat-title">퍼스널 컬러 진단</div>
+      <div class="feat-text">봄웜·여름쿨·가을웜·겨울쿨 퍼스널 컬러를 기반으로 나에게 맞는 색감을 추천합니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- COLOR MATCHING DEMO -->
+<section class="demo" id="demo">
+  <div class="section-label">Demo</div>
+  <h2 class="section-title">이렇게 작동해요</h2>
+  <p class="section-desc">네이비 슬랙스를 선택했을 때 AI가 추천하는 컬러와 코디입니다.</p>
+  <div class="demo-container">
+    <div class="demo-left">
+      <div class="demo-card">
+        <div class="demo-subtitle">📌 선택한 아이템</div>
+        <div class="selected-item">
+          <div class="selected-thumb">👖</div>
+          <div class="selected-info">
+            <div class="selected-name">네이비 슬랙스</div>
+            <div class="selected-color">주 컬러: Navy Blue #1E3A5F</div>
+            <div class="selected-color">보조 컬러: Dark Gray #4B5563</div>
+          </div>
+        </div>
+        <div class="palette-title">🎨 추천 컬러 팔레트</div>
+        <div class="palette-row">
+          <div class="p-chip">
+            <div class="p-color" style="background:#FFFFFF;border:1px solid #ddd"></div>
+            <div class="p-label">크림화이트</div>
+          </div>
+          <div class="p-chip recommended">
+            <div class="p-color" style="background:#F4A460"></div>
+            <div class="p-label">샌디 베이지 ⭐</div>
+          </div>
+          <div class="p-chip">
+            <div class="p-color" style="background:#9CA3AF"></div>
+            <div class="p-label">라이트 그레이</div>
+          </div>
+          <div class="p-chip">
+            <div class="p-color" style="background:#D2B48C"></div>
+            <div class="p-label">카멜</div>
+          </div>
+          <div class="p-chip">
+            <div class="p-color" style="background:#4B5563"></div>
+            <div class="p-label">차콜</div>
+          </div>
+        </div>
+        <div style="background:#0F172A;border-radius:10px;padding:12px;font-size:12px;color:#94A3B8;line-height:1.6">
+          💡 <strong style="color:#7DD3FC">컬러 조합 팁</strong><br/>
+          네이비는 베이지·카멜 계열과 톤온톤 조화, 화이트로 깔끔함을 연출할 수 있어요.
+        </div>
+      </div>
+    </div>
+    <div class="demo-right">
+      <div class="demo-subtitle" style="color:#64748B;margin-bottom:16px">✨ 내 옷장 기반 추천 코디</div>
+      <div class="outfit-suggestions">
+        <div class="sug-card best">
+          <div class="sug-items">
+            <div class="sug-item" style="background:#2A1A00">👕</div>
+            <div class="sug-item" style="background:#1E3A5F">👖</div>
+            <div class="sug-item" style="background:#2A1A00">👟</div>
+          </div>
+          <div class="sug-info">
+            <div class="sug-mood">캐주얼 룩</div>
+            <div class="sug-name">카멜 티셔츠 + 네이비 슬랙스 + 베이지 스니커즈</div>
+            <span class="sug-badge badge-best">🏆 Best Match 98%</span>
+          </div>
+        </div>
+        <div class="sug-card">
+          <div class="sug-items">
+            <div class="sug-item" style="background:#1a1a1a">👔</div>
+            <div class="sug-item" style="background:#1E3A5F">👖</div>
+            <div class="sug-item" style="background:#1a1a1a">👞</div>
+          </div>
+          <div class="sug-info">
+            <div class="sug-mood">오피스 룩</div>
+            <div class="sug-name">화이트 셔츠 + 네이비 슬랙스 + 다크 옥스포드</div>
+            <span class="sug-badge badge-good">👍 Good 94%</span>
+          </div>
+        </div>
+        <div class="sug-card">
+          <div class="sug-items">
+            <div class="sug-item" style="background:#374151">🧥</div>
+            <div class="sug-item" style="background:#1E3A5F">👖</div>
+            <div class="sug-item" style="background:#374151">👟</div>
+          </div>
+          <div class="sug-info">
+            <div class="sug-mood">스트릿 룩</div>
+            <div class="sug-name">그레이 후디 + 네이비 슬랙스 + 차콜 스니커즈</div>
+            <span class="sug-badge badge-good">👍 Good 89%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section class="roadmap" id="roadmap">
+  <div class="center">
+    <div class="section-label">Roadmap</div>
+    <h2 class="section-title">출시 로드맵</h2>
+    <p class="section-desc">단계적으로 완성해가는 클로젯핏의 여정을 함께해주세요.</p>
+  </div>
+  <div class="roadmap-grid">
+    <div class="phase-card active">
+      <div class="phase-tag">진행중</div>
+      <div class="phase-num">Phase 1</div>
+      <div class="phase-title">MVP 출시</div>
+      <div class="phase-period">1~3개월</div>
+      <ul class="phase-items">
+        <li>옷 등록 & 관리</li>
+        <li>AI 컬러 추출</li>
+        <li>기본 매칭 추천</li>
+        <li>레퍼런스 룩 갤러리</li>
+      </ul>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">Phase 2</div>
+      <div class="phase-title">개인화 강화</div>
+      <div class="phase-period">4~6개월</div>
+      <ul class="phase-items">
+        <li>퍼스널 컬러 진단</li>
+        <li>스타일 무드 필터</li>
+        <li>스타일 리포트</li>
+        <li>날씨 연동</li>
+      </ul>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">Phase 3</div>
+      <div class="phase-title">커머스 연동</div>
+      <div class="phase-period">7~9개월</div>
+      <ul class="phase-items">
+        <li>부족 아이템 쇼핑 연계</li>
+        <li>브랜드 파트너십</li>
+        <li>프리미엄 구독</li>
+        <li>스타일리스트 콜라보</li>
+      </ul>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">Phase 4</div>
+      <div class="phase-title">커뮤니티</div>
+      <div class="phase-period">10~12개월</div>
+      <ul class="phase-items">
+        <li>유저 룩 공유 피드</li>
+        <li>팔로우 & 좋아요</li>
+        <li>스타일 챌린지</li>
+        <li>인플루언서 연동</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2 class="section-title">지금 바로 시작해보세요</h2>
+  <p class="section-desc">사전 신청하시면 출시 알림과 함께 3개월 무료 프리미엄 혜택을 드립니다.</p>
+  <div class="store-btns">
+    <button class="store-btn" onclick="openModal()">
+      <span class="store-icon">🍎</span> App Store 사전 신청
+    </button>
+    <button class="store-btn" onclick="openModal()">
+      <span class="store-icon">🤖</span> Google Play 사전 신청
+    </button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Closet<span>Fit</span></div>
+  <div class="footer-links">
+    <a href="#">서비스 소개</a>
+    <a href="#">개인정보처리방침</a>
+    <a href="#">이용약관</a>
+    <a href="#">문의하기</a>
+  </div>
+  <div class="footer-copy">© 2026 ClosetFit. All rights reserved.</div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+    <h2>🎉 사전 신청</h2>
+    <p>출시 알림을 받고 3개월 무료 프리미엄 혜택을 누리세요!</p>
+    <input class="modal-input" type="text" placeholder="이름" />
+    <input class="modal-input" type="email" placeholder="이메일 주소" />
+    <select class="modal-input" style="cursor:pointer;color:#6B7280">
+      <option value="">선호 스타일 선택</option>
+      <option>캐주얼</option>
+      <option>오피스</option>
+      <option>스트릿</option>
+      <option>미니멀</option>
+      <option>데이트</option>
+    </select>
+    <button class="modal-submit" onclick="submitModal()">신청 완료 →</button>
+  </div>
+</div>
+
+<script>
+  function openModal() {
+    document.getElementById('modal').classList.add('open');
+  }
+  function closeModal(e) {
+    if (e.target === document.getElementById('modal')) {
+      document.getElementById('modal').classList.remove('open');
+    }
+  }
+  function submitModal() {
+    const btn = document.querySelector('.modal-submit');
+    btn.textContent = '✅ 신청 완료!';
+    btn.style.background = '#16A34A';
+    setTimeout(() => {
+      document.getElementById('modal').classList.remove('open');
+      btn.textContent = '신청 완료 →';
+      btn.style.background = '';
+    }, 1800);
+  }
+  // Smooth scroll for nav
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+</script>
+</body>
+</html>
