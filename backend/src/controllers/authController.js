@@ -53,8 +53,7 @@ exports.updateProfile = async (req, res, next) => {
       [personal_color, preferred_styles, req.user.id]
     );
     const row = result.rows[0];
-    const { id, email, nickname, personal_color, preferred_styles } = row;
-    res.json({ user: { id, email, nickname, personal_color, preferred_styles } });
+    res.json({ user: { id: row.id, email: row.email, nickname: row.nickname, personal_color: row.personal_color, preferred_styles: row.preferred_styles } });
   } catch (err) {
     next(err);
   }
