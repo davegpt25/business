@@ -1,21 +1,31 @@
-from pydantic import BaseModel
-from typing import List, Optional
+from pydantic import BaseModel, field_validator, Field
+from typing import List
 
 class ColorInfo(BaseModel):
-    hex: str          # "#FF5733"
+    hex: str = Field(..., pattern=r'^#[0-9A-Fa-f]{6}$')  # "#FF5733"
     rgb: List[int]    # [255, 87, 51]
-    percentage: float # 0.42 (전체 픽셀 중 비율)
-    name: str         # "warm-red" (색상 계열명)
+    percentage: float = Field(..., ge=0.0, le=1.0)  # 0.42
+    name: str         # "warm-red"
+
+    @field_validator('rgb')
+    @classmethod
+    def check_rgb(cls, v: List[int]) -> List[int]:
+        if len(v) != 3:
+            raise ValueError('rgb must have exactly 3 elements')
+        for channel in v:
+            if not (0 <= channel <= 255):
+                raise ValueError(f'rgb channel value {channel} is out of range 0-255')
+        return v
 
 class ColorExtractionResponse(BaseModel):
     primary_color: ColorInfo
-    secondary_colors: List[ColorInfo]  # 최대 4개
-    dominant_palette: List[str]        # hex 코드 리스트
+    secondary_colors: List[ColorInfo]  # max 4
+    dominant_palette: List[str]        # hex code list
 
 class TaggingResponse(BaseModel):
-    style_keywords: List[str]   # ["캐주얼", "루즈핏"]
-    fit_type: str               # "오버사이즈", "슬림", "레귤러"
-    material_hint: str          # "니트", "데님", "면"
+    style_keywords: List[str]
+    fit_type: str
+    material_hint: str
 
 class ItemAnalysisResponse(BaseModel):
     colors: ColorExtractionResponse
