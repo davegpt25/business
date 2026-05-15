@@ -13,6 +13,11 @@ exports.socialLogin = async (req, res, next) => {
       return res.status(400).json({ error: 'provider와 provider_id는 필수입니다.' });
     }
 
+    const VALID_PROVIDERS = ['kakao', 'google', 'apple'];
+    if (!VALID_PROVIDERS.includes(provider)) {
+      return res.status(400).json({ error: `provider는 ${VALID_PROVIDERS.join(', ')} 중 하나여야 합니다.` });
+    }
+
     const existing = await db.query(
       'SELECT * FROM users WHERE provider = $1 AND provider_id = $2',
       [provider, provider_id]
@@ -31,7 +36,9 @@ exports.socialLogin = async (req, res, next) => {
     }
 
     const token = signToken(user.id);
-    res.json({ token, user });
+    const { id, email, nickname, personal_color, preferred_styles, provider: userProvider, provider_id: userProviderId } = user;
+    const safeUser = { id, email, nickname, personal_color, preferred_styles, provider: userProvider, provider_id: userProviderId };
+    res.json({ token, user: safeUser });
   } catch (err) {
     next(err);
   }
@@ -45,7 +52,9 @@ exports.updateProfile = async (req, res, next) => {
        WHERE id = $3 RETURNING *`,
       [personal_color, preferred_styles, req.user.id]
     );
-    res.json({ user: result.rows[0] });
+    const row = result.rows[0];
+    const { id, email, nickname, personal_color, preferred_styles } = row;
+    res.json({ user: { id, email, nickname, personal_color, preferred_styles } });
   } catch (err) {
     next(err);
   }

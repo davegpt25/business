@@ -1,4 +1,7 @@
 require('dotenv').config();
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET env var is required');
+}
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -12,8 +15,9 @@ const errorHandler = require('./middleware/errorHandler');
 const app = express();
 
 app.use(helmet());
+// TODO: Restrict to known origins in production via ALLOWED_ORIGIN env var
 app.use(cors());
-app.use(morgan('dev'));
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json());
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
