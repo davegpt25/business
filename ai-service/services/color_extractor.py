@@ -5,27 +5,26 @@ from PIL import Image
 import io
 from typing import Dict, List
 
-COLOR_NAMES = {
-    "red": ([150, 0, 0], [255, 80, 80]),
-    "orange": ([200, 100, 0], [255, 180, 80]),
-    "yellow": ([200, 200, 0], [255, 255, 100]),
-    "green": ([0, 100, 0], [100, 200, 100]),
-    "blue": ([0, 0, 100], [80, 130, 255]),
-    "navy": ([0, 0, 50], [50, 70, 130]),
-    "purple": ([80, 0, 80], [180, 80, 200]),
-    "pink": ([200, 100, 120], [255, 200, 220]),
-    "white": ([200, 200, 200], [255, 255, 255]),
-    "gray": ([80, 80, 80], [180, 180, 180]),
-    "black": ([0, 0, 0], [60, 60, 60]),
-    "brown": ([80, 40, 10], [160, 110, 70]),
-    "beige": ([180, 160, 120], [230, 215, 180]),
+COLOR_CENTROIDS = {
+    "red":    [200, 40,  40],
+    "orange": [225, 140, 40],
+    "yellow": [228, 228, 50],
+    "green":  [50,  150, 50],
+    "blue":   [40,  65,  200],
+    "navy":   [25,  35,  90],
+    "purple": [130, 40,  140],
+    "pink":   [228, 150, 170],
+    "white":  [240, 240, 240],
+    "gray":   [130, 130, 130],
+    "black":  [30,  30,  30],
+    "brown":  [120, 75,  40],
+    "beige":  [205, 188, 150],
 }
 
 def get_color_name(rgb: List[int]) -> str:
     min_dist = float("inf")
     closest = "neutral"
-    for name, (low, high) in COLOR_NAMES.items():
-        center = [(low[i] + high[i]) / 2 for i in range(3)]
+    for name, center in COLOR_CENTROIDS.items():
         dist = sum((rgb[i] - center[i]) ** 2 for i in range(3)) ** 0.5
         if dist < min_dist:
             min_dist = dist

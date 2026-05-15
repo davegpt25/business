@@ -36,7 +36,7 @@ def test_rgb_to_hex():
     assert rgb_to_hex([0, 255, 0]) == "#00FF00"
     assert rgb_to_hex([0, 0, 0]) == "#000000"
 
-def test_get_color_name_returns_string():
-    name = get_color_name([255, 87, 51])
-    assert isinstance(name, str)
-    assert len(name) > 0
+def test_get_color_name_known_colors():
+    assert get_color_name([220, 30, 30]) == "red"
+    assert get_color_name([20, 20, 20]) == "black"
+    assert get_color_name([245, 245, 245]) == "white"
