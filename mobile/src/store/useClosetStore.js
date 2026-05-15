@@ -17,14 +17,25 @@ const useClosetStore = create((set) => ({
   },
 
   addItem: async (itemData) => {
-    const res = await closetAPI.addItem(itemData);
-    set((state) => ({ items: [res.data.item, ...state.items] }));
-    return res.data.item;
+    set({ loading: true, error: null });
+    try {
+      const res = await closetAPI.addItem(itemData);
+      set((state) => ({ items: [res.data.item, ...state.items], loading: false }));
+      return res.data.item;
+    } catch (e) {
+      set({ error: e.message, loading: false });
+      throw e;
+    }
   },
 
   deleteItem: async (id) => {
-    await closetAPI.deleteItem(id);
-    set((state) => ({ items: state.items.filter((i) => i.id !== id) }));
+    try {
+      await closetAPI.deleteItem(id);
+      set((state) => ({ items: state.items.filter((i) => i.id !== id) }));
+    } catch (e) {
+      set({ error: e.message });
+      throw e;
+    }
   },
 }));
 

@@ -31,7 +31,7 @@ export default function OutfitResultScreen({ route }) {
       )}
       <FlatList
         data={recommendations}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
           <View style={styles.card}>
             <View style={[styles.colorBar, { backgroundColor: item.primary_color || '#eee' }]} />

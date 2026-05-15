@@ -3,7 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Button } from 'reac
 import useClosetStore from '../store/useClosetStore';
 
 export default function ClosetScreen({ navigation }) {
-  const { items, loading, fetchItems, deleteItem } = useClosetStore();
+  const { items, loading, error, fetchItems, deleteItem } = useClosetStore();
 
   useEffect(() => { fetchItems(); }, []);
 
@@ -11,9 +11,10 @@ export default function ClosetScreen({ navigation }) {
     <View style={styles.container}>
       <Button title="+ 옷 추가" onPress={() => navigation.navigate('AddItem')} />
       {loading && <Text style={styles.loading}>불러오는 중...</Text>}
+      {error && <Text style={styles.error}>{error}</Text>}
       <FlatList
         data={items}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => String(item.id)}
         numColumns={2}
         renderItem={({ item }) => (
           <View style={styles.card}>
@@ -40,4 +41,5 @@ const styles = StyleSheet.create({
   category: { fontWeight: 'bold', textTransform: 'uppercase', fontSize: 11, color: '#888' },
   color: { fontSize: 14, marginTop: 2 },
   delete: { color: '#e53e3e', marginTop: 8, fontSize: 12 },
+  error: { color: '#e53e3e', textAlign: 'center', padding: 16 },
 });

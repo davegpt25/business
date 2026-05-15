@@ -13,7 +13,7 @@ export default function ColorMatchScreen({ navigation }) {
       <Text style={styles.subtitle}>어울리는 조합을 찾을 아이템을 선택하세요</Text>
       <FlatList
         data={items}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.itemRow}

@@ -1,12 +1,20 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import useAuthStore from '../store/useAuthStore';
 
-export default function OnboardingScreen({ navigation }) {
+export default function OnboardingScreen() {
+  const { setAuthenticated } = useAuthStore();
+
+  const handleStart = async () => {
+    // In a real app, this would call socialLogin and get a real token
+    await setAuthenticated('dev-onboarding-token');
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>클로젯핏에 오신 것을 환영합니다</Text>
       <Text style={styles.subtitle}>이미 가진 옷으로, 더 잘 입는다</Text>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.replace('Main')}>
+      <TouchableOpacity style={styles.button} onPress={handleStart}>
         <Text style={styles.buttonText}>시작하기</Text>
       </TouchableOpacity>
     </View>
