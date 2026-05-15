@@ -37,6 +37,9 @@ exports.addItem = async (req, res, next) => {
 exports.getItems = async (req, res, next) => {
   try {
     const { category } = req.query;
+    if (category && !VALID_CATEGORIES.includes(category)) {
+      return res.status(400).json({ error: `category는 ${VALID_CATEGORIES.join(', ')} 중 하나여야 합니다.` });
+    }
     let query = 'SELECT * FROM clothing_items WHERE user_id = $1';
     const params = [req.user.id];
     if (category) {
@@ -67,6 +70,9 @@ exports.getItem = async (req, res, next) => {
 exports.updateItem = async (req, res, next) => {
   try {
     const { style_keywords, fit_type, material_hint, user_tags } = req.body;
+    if (style_keywords === undefined && fit_type === undefined && material_hint === undefined && user_tags === undefined) {
+      return res.status(400).json({ error: '업데이트할 필드가 없습니다.' });
+    }
     const result = await db.query(
       `UPDATE clothing_items
        SET style_keywords = COALESCE($1, style_keywords),

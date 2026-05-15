@@ -91,3 +91,85 @@ describe('DELETE /api/v1/closet/items/:id', () => {
     expect(res.status).toBe(404);
   });
 });
+
+describe('GET /api/v1/closet/items/:id and PATCH', () => {
+  let itemId;
+
+  beforeAll(async () => {
+    const res = await request(app)
+      .post('/api/v1/closet/items')
+      .set('Authorization', `Bearer ${testToken}`)
+      .send({ category: 'outer', image_url: 'https://example.com/jacket.jpg', fit_type: '오버사이즈' });
+    itemId = res.body.item.id;
+  });
+
+  afterAll(async () => {
+    await db.query('DELETE FROM clothing_items WHERE id = $1', [itemId]);
+  });
+
+  it('단일 아이템 조회 성공', async () => {
+    const res = await request(app)
+      .get(`/api/v1/closet/items/${itemId}`)
+      .set('Authorization', `Bearer ${testToken}`);
+    expect(res.status).toBe(200);
+    expect(res.body.item.id).toBe(itemId);
+  });
+
+  it('PATCH로 태그 업데이트 성공', async () => {
+    const res = await request(app)
+      .patch(`/api/v1/closet/items/${itemId}`)
+      .set('Authorization', `Bearer ${testToken}`)
+      .send({ fit_type: '슬림' });
+    expect(res.status).toBe(200);
+    expect(res.body.item.fit_type).toBe('슬림');
+  });
+
+  it('PATCH 빈 바디 시 400', async () => {
+    const res = await request(app)
+      .patch(`/api/v1/closet/items/${itemId}`)
+      .set('Authorization', `Bearer ${testToken}`)
+      .send({});
+    expect(res.status).toBe(400);
+  });
+});
+
+describe('Authorization: cross-user isolation', () => {
+  let itemId;
+  let otherToken;
+
+  beforeAll(async () => {
+    // Create item owned by testUser
+    const res = await request(app)
+      .post('/api/v1/closet/items')
+      .set('Authorization', `Bearer ${testToken}`)
+      .send({ category: 'bottom', image_url: 'https://example.com/pants.jpg' });
+    itemId = res.body.item.id;
+
+    // Create another user
+    const otherUser = await db.query(
+      `INSERT INTO users (provider, provider_id, email, nickname)
+       VALUES ('test', 'other_closet_user', 'other@test.com', '타유저')
+       ON CONFLICT (provider, provider_id) DO UPDATE SET nickname = EXCLUDED.nickname
+       RETURNING id`
+    );
+    otherToken = jwt.sign({ id: otherUser.rows[0].id }, process.env.JWT_SECRET);
+  });
+
+  afterAll(async () => {
+    await db.query("DELETE FROM users WHERE provider = 'test' AND provider_id = 'other_closet_user'");
+  });
+
+  it('다른 사용자의 아이템 조회 시 404', async () => {
+    const res = await request(app)
+      .get(`/api/v1/closet/items/${itemId}`)
+      .set('Authorization', `Bearer ${otherToken}`);
+    expect(res.status).toBe(404);
+  });
+
+  it('다른 사용자의 아이템 삭제 시 404', async () => {
+    const res = await request(app)
+      .delete(`/api/v1/closet/items/${itemId}`)
+      .set('Authorization', `Bearer ${otherToken}`);
+    expect(res.status).toBe(404);
+  });
+});
