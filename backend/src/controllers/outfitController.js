@@ -5,7 +5,7 @@ function hexToHsl(hex) {
   const g = parseInt(hex.slice(3, 5), 16) / 255;
   const b = parseInt(hex.slice(5, 7), 16) / 255;
   const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  let h, s, l = (max + min) / 2;
+  let h = 0, s, l = (max + min) / 2;
   if (max === min) {
     h = s = 0;
   } else {
@@ -51,7 +51,7 @@ const COMPLEMENTARY_CATEGORIES = {
 
 exports.getRecommendations = async (req, res, next) => {
   try {
-    const { base_item_id, mood } = req.query;
+    const { base_item_id } = req.query;
     if (!base_item_id) return res.status(400).json({ error: 'base_item_id는 필수입니다.' });
 
     const baseResult = await db.query(

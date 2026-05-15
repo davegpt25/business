@@ -55,10 +55,44 @@ describe('GET /api/v1/outfit/recommendations', () => {
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.recommendations)).toBe(true);
     expect(res.body.recommendations.length).toBeGreaterThanOrEqual(1);
+    expect(res.body.recommendations[0]).toHaveProperty('compatibility_score');
+    expect(res.body.recommendations[0].compatibility_score).toBeGreaterThan(0);
   });
 
   it('인증 없으면 401', async () => {
     const res = await request(app).get('/api/v1/outfit/recommendations?base_item_id=abc');
     expect(res.status).toBe(401);
+  });
+});
+
+describe('Authorization: cross-user outfit isolation', () => {
+  let baseItemId;
+  let otherToken;
+
+  beforeAll(async () => {
+    const items = await db.query(
+      "SELECT id FROM clothing_items WHERE user_id = $1 AND category = 'top' LIMIT 1",
+      [testUserId]
+    );
+    baseItemId = items.rows[0].id;
+
+    const otherUser = await db.query(
+      `INSERT INTO users (provider, provider_id, email, nickname)
+       VALUES ('test', 'other_outfit_user', 'other_outfit@test.com', '타유저')
+       ON CONFLICT (provider, provider_id) DO UPDATE SET nickname = EXCLUDED.nickname
+       RETURNING id`
+    );
+    otherToken = jwt.sign({ id: otherUser.rows[0].id }, process.env.JWT_SECRET);
+  });
+
+  afterAll(async () => {
+    await db.query("DELETE FROM users WHERE provider = 'test' AND provider_id = 'other_outfit_user'");
+  });
+
+  it('다른 사용자의 base_item으로 요청 시 404', async () => {
+    const res = await request(app)
+      .get(`/api/v1/outfit/recommendations?base_item_id=${baseItemId}`)
+      .set('Authorization', `Bearer ${otherToken}`);
+    expect(res.status).toBe(404);
   });
 });
