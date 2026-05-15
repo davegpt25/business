@@ -9,8 +9,8 @@ export default function App() {
 
   useEffect(() => {
     AsyncStorage.getItem('auth_token')
-      .then((token) => {
-        if (token) setAuthenticated(token);
+      .then(async (token) => {
+        if (token) await setAuthenticated(token);
         setChecking(false);
       })
       .catch(() => {

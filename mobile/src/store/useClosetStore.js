@@ -29,11 +29,12 @@ const useClosetStore = create((set) => ({
   },
 
   deleteItem: async (id) => {
+    set({ loading: true, error: null });
     try {
       await closetAPI.deleteItem(id);
-      set((state) => ({ items: state.items.filter((i) => i.id !== id) }));
+      set((state) => ({ items: state.items.filter((i) => i.id !== id), loading: false }));
     } catch (e) {
-      set({ error: e.message });
+      set({ error: e.message, loading: false });
       throw e;
     }
   },
