@@ -36,11 +36,11 @@ jobs:
           EXPO_PUBLIC_API_BASE_URL: ${{ secrets.EXPO_PUBLIC_API_BASE_URL }}
         run: npx expo export --platform web
 
-      - name: Deploy to GitHub Pages (mock2 branch)
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: mobile/dist
           publish_branch: gh-pages
           destination_dir: mock2
-          keep_files: false
+          keep_files: true

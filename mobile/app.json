@@ -15,7 +15,7 @@
       "output": "single"
     },
     "experiments": {
-      "baseUrl": "/mock2"
+      "baseUrl": "/business/mock2"
     },
     "platforms": ["ios", "android", "web"]
   }
