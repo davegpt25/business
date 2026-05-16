@@ -36,8 +36,15 @@ exports.socialLogin = async (req, res, next) => {
     }
 
     const token = signToken(user.id);
-    const { id, email, nickname, personal_color, preferred_styles, provider: userProvider, provider_id: userProviderId } = user;
-    const safeUser = { id, email, nickname, personal_color, preferred_styles, provider: userProvider, provider_id: userProviderId };
+    const safeUser = {
+      id: user.id,
+      email: user.email,
+      nickname: user.nickname,
+      personal_color: user.personal_color,
+      preferred_styles: user.preferred_styles,
+      provider: user.provider,
+      provider_id: user.provider_id,
+    };
     res.json({ token, user: safeUser });
   } catch (err) {
     next(err);
