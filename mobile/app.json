@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "ClosetFit",
+    "slug": "closetfit",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    },
+    "experiments": {
+      "baseUrl": "/mock2"
+    },
+    "platforms": ["ios", "android", "web"]
+  }
+}
