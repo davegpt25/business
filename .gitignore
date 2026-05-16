@@ -1,0 +1,6 @@
+.env
+*.env.local
+.claude/
+node_modules/
+uploads/
+*.lock

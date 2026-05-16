@@ -25,6 +25,14 @@ export const authAPI = {
   socialLogin: (data) => client.post('/auth/social-login', data),
 };
 
+export const uploadAPI = {
+  uploadImage: (formData) =>
+    client.post('/upload/image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 30000,
+    }),
+};
+
 export const closetAPI = {
   getItems: (params) => client.get('/closet/items', { params }),
   addItem: (data) => client.post('/closet/items', data),
